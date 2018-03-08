@@ -106,6 +106,8 @@ class SlackAPIPostOperator(SlackAPIOperator):
                       'https://www.youtube.com/watch?v=J---aiyznGQ',
                  icon_url='https://raw.githubusercontent.com/airbnb/airflow/master/airflow/www/static/pin_100.png',
                  attachments=None,
+                 link_names=False,
+                 parse=None,
                  *args, **kwargs):
         self.method = 'chat.postMessage'
         self.channel = channel
@@ -113,6 +115,8 @@ class SlackAPIPostOperator(SlackAPIOperator):
         self.text = text
         self.icon_url = icon_url
         self.attachments = attachments
+        self.link_names = link_names
+        self.parse = parse
         super(SlackAPIPostOperator, self).__init__(method=self.method,
                                                    *args, **kwargs)
 
@@ -124,3 +128,8 @@ class SlackAPIPostOperator(SlackAPIOperator):
             'icon_url': self.icon_url,
             'attachments': json.dumps(self.attachments),
         }
+        # `link_names` is used to find and link channel names and usernames.
+        if self.link_names is not None:
+            self.api_params['link_names'] = self.link_names
+        if self.parse is not None:
+            self.api_params['parse'] = self.parse
